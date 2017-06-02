@@ -15,56 +15,38 @@ import java.net.HttpURLConnection;
 
 public final class OpenMoviesJsonUtils {
 
-    public static String[] getSimpleMovieStringsFromJson(Context context, String forecastJsonStr)
+    public static String[] getSimpleMovieStringsFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
-        final String OWM_LIST = "list";
-        final String OWM_TEMPERATURE = "temp";
+        final String MOVIE_LIST = "results";
+        final String MESSAGE_CODE = "status_code";
+        final String SUCCESS = "success";
 
-        final String OWM_WEATHER = "weather";
-        final String OWM_DESCRIPTION = "main";
+        String[] parsedMovieData = null;
 
-        final String OWM_MESSAGE_CODE = "cod";
+        JSONObject movieJson = new JSONObject(movieJsonStr);
 
-        String[] parsedWeatherData = null;
-
-        JSONObject forecastJson = new JSONObject(forecastJsonStr);
-
-        if (forecastJson.has(OWM_MESSAGE_CODE)) {
-            int errorCode = forecastJson.getInt(OWM_MESSAGE_CODE);
-
-            switch (errorCode) {
-                case HttpURLConnection.HTTP_OK:
-                    break;
-                case HttpURLConnection.HTTP_NOT_FOUND:
-                    return null;
-                default:
-                    return null;
+        if (movieJson.has(SUCCESS)) {
+            if (movieJson.getString(SUCCESS) == "false") {
+                return null;
             }
         }
 
-        JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
+        JSONArray movieArray = movieJson.getJSONArray(MOVIE_LIST);
 
-        parsedWeatherData = new String[weatherArray.length()];
+        parsedMovieData = new String[movieArray.length()];
 
-        for (int i = 0; i < weatherArray.length(); i++) {
+        for (int i = 0; i < movieArray.length(); i++) {
 
-            String description;
+            String title;
 
-            JSONObject dayForecast = weatherArray.getJSONObject(i);
+            JSONObject movie = movieArray.getJSONObject(i);
+            title = movie.getString("title");
 
-            JSONObject weatherObject =
-                    dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
-            description = weatherObject.getString(OWM_DESCRIPTION);
-
-            parsedWeatherData[i] = description;
+            parsedMovieData[i] = title;
         }
 
-        return parsedWeatherData;
-    }
-
-    public static ContentValues[] getFullWeatherDataFromJson(Context context, String forecastJsonStr) {
-        return null;
+        return parsedMovieData;
     }
 
 }
