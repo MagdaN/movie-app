@@ -54,9 +54,9 @@ public final class NetworkUtils {
      * @param locationQuery The location that will be queried for.
      * @return The URL to use to query the weather server.
      */
-    public static URL buildUrl(String locationQuery) {
+    public static URL buildUrl(String sortByQuery) {
         Uri builtUri = Uri.parse(MIVIE_DB_BASE_URL).buildUpon()
-                .appendQueryParameter(SORT_PARAM, sortByPopolarity)
+                .appendQueryParameter(SORT_PARAM, sortByQuery)
                 .appendQueryParameter(API_PARAM, apiKey)
                 .build();
 

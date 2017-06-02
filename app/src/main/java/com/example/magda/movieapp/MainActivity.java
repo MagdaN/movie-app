@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,13 +44,34 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieData();
+        loadMovieData("popularity.desc");
     }
 
-    private void loadMovieData() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.movies, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.sort_by_popularity) {
+            loadMovieData("popularity.desc");
+        }
+
+        if (id == R.id.sort_by_votes) {
+            loadMovieData("vote_count.desc");
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadMovieData(String sortQuery) {
         showMovieDataView();
-        String location = "94043,USA";
-        new FetchMoviesTask().execute(location);
+        new FetchMoviesTask().execute(sortQuery);
     }
 
     private void showMovieDataView() {
@@ -88,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
 
-            String location = params[0];
+            String sortQuery = params[0];
             URL movieRequestUrl = NetworkUtils
-                    .buildUrl(location);
+                    .buildUrl(sortQuery);
 
             try {
                 String jsonMovieResponse = NetworkUtils
