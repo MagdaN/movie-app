@@ -1,5 +1,8 @@
 package com.example.magda.movieapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +20,11 @@ import com.example.magda.movieapp.utilities.NetworkUtils;
 import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 
 import java.net.URL;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
@@ -40,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter = new MovieAdapter(this);
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -69,6 +75,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(MovieDBEntry movie) {
+        Context context = this;
+        Class destinationClass = MovieDetailActivity.class;
+        Intent intentToStartMovieDetailActivity = new Intent(context, destinationClass);
+        intentToStartMovieDetailActivity.putExtra("movie_detail", movie);
+        startActivity(intentToStartMovieDetailActivity);
+    }
+
     private void loadMovieData(String sortQuery) {
         showMovieDataView();
         new FetchMoviesTask().execute(sortQuery);
@@ -84,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-
-    public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, MovieDBEntry[]> {
 
         @Override
         protected void onPreExecute() {
@@ -94,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String[] movieData) {
+        protected void onPostExecute(MovieDBEntry[] movieData) {
 
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieData != null) {
@@ -106,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected MovieDBEntry[] doInBackground(String... params) {
 
             if (params.length == 0) {
                 return null;
@@ -120,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                String[] simpleJsonMovieData = OpenMoviesJsonUtils
+                MovieDBEntry[] simpleJsonMovieData = OpenMoviesJsonUtils
                         .getSimpleMovieStringsFromJson(MainActivity.this, jsonMovieResponse);
 
                 return simpleJsonMovieData;

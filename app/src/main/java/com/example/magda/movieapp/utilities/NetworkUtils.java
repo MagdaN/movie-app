@@ -47,13 +47,6 @@ public final class NetworkUtils {
     final static String API_PARAM = "api_key";
     final static String SORT_PARAM = "sort_by";
 
-    /**
-     * Builds the URL used to talk to the weather server using a location. This location is based
-     * on the query capabilities of the weather provider that we are using.
-     *
-     * @param locationQuery The location that will be queried for.
-     * @return The URL to use to query the weather server.
-     */
     public static URL buildUrl(String sortByQuery) {
         Uri builtUri = Uri.parse(MIVIE_DB_BASE_URL).buildUpon()
                 .appendQueryParameter(SORT_PARAM, sortByQuery)

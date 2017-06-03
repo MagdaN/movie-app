@@ -2,12 +2,16 @@ package com.example.magda.movieapp.utilities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
+
+import com.example.magda.movieapp.MovieDBEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.List;
 
 /**
  * Created by magda on 02.06.17.
@@ -15,14 +19,20 @@ import java.net.HttpURLConnection;
 
 public final class OpenMoviesJsonUtils {
 
-    public static String[] getSimpleMovieStringsFromJson(Context context, String movieJsonStr)
+    private static final String TAG = OpenMoviesJsonUtils.class.getSimpleName();
+
+    public static MovieDBEntry[] getSimpleMovieStringsFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
         final String MOVIE_LIST = "results";
-        final String MESSAGE_CODE = "status_code";
         final String SUCCESS = "success";
+        final String ORIGINAL_TITLE = "original_title";
+        final String POSTER_PATH = "poster_path";
+        final String OVERVIEW = "overview";
+        final String VOTE_AVERAGE = "vote_average";
+        final String RELEASE_DATE = "release_date";
 
-        String[] parsedMovieData = null;
+        MovieDBEntry[] parsedMovieData = null;
 
         JSONObject movieJson = new JSONObject(movieJsonStr);
 
@@ -34,16 +44,20 @@ public final class OpenMoviesJsonUtils {
 
         JSONArray movieArray = movieJson.getJSONArray(MOVIE_LIST);
 
-        parsedMovieData = new String[movieArray.length()];
+
+        parsedMovieData = new MovieDBEntry[movieArray.length()];
 
         for (int i = 0; i < movieArray.length(); i++) {
 
-            String title;
 
             JSONObject movie = movieArray.getJSONObject(i);
-            title = movie.getString("title");
+            String title = movie.getString(ORIGINAL_TITLE);
+            String poster = movie.getString(POSTER_PATH);
+            String overview = movie.getString(OVERVIEW);
+            String voteAverage = movie.getString(VOTE_AVERAGE);
+            String releaseDate = movie.getString(RELEASE_DATE);
 
-            parsedMovieData[i] = title;
+            parsedMovieData[i] = new MovieDBEntry(title, poster, overview, voteAverage, releaseDate);
         }
 
         return parsedMovieData;
