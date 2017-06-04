@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -19,9 +22,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private MovieDBEntry[] mMovieData;
 
     private final MovieAdapterOnClickHandler mClickHandler;
+    private Context mContext;
 
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(MovieAdapterOnClickHandler clickHandler, Context context)
+    {
         mClickHandler = clickHandler;
+        mContext = context;
     }
 
     public interface MovieAdapterOnClickHandler {
@@ -29,11 +35,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mMovieTextView;
+        public final ImageView mMovieImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieTextView = (TextView) view.findViewById(R.id.tv_movie_data);
+            mMovieImageView = (ImageView) view.findViewById(R.id.iv_movie_list_item_poster);
             view.setOnClickListener(this);
         }
 
@@ -41,7 +47,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
             MovieDBEntry movie = mMovieData[adapterPosition];
-            Log.v(TAG, movie.getmTitle());
             mClickHandler.onClick(movie);
         }
     }
@@ -49,7 +54,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         MovieDBEntry movieForThisEntry = mMovieData[position];
-        holder.mMovieTextView.setText(movieForThisEntry.getmTitle());
+        String url = movieForThisEntry.getmPoster();
+        Picasso.with(mContext)
+                .load(url)
+                .into(holder.mMovieImageView);
     }
 
     @Override
