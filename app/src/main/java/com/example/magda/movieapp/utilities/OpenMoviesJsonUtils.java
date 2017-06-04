@@ -13,10 +13,6 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-/**
- * Created by magda on 02.06.17.
- */
-
 public final class OpenMoviesJsonUtils {
 
     private static final String TAG = OpenMoviesJsonUtils.class.getSimpleName();
@@ -24,6 +20,8 @@ public final class OpenMoviesJsonUtils {
     public static MovieDBEntry[] getSimpleMovieStringsFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
+        final String MOVIE_POSTER_BASE = "http://image.tmdb.org/t/p/";
+        final String MOVIE_POSTER_SIZE = "w185";
         final String MOVIE_LIST = "results";
         final String SUCCESS = "success";
         final String ORIGINAL_TITLE = "original_title";
@@ -52,7 +50,7 @@ public final class OpenMoviesJsonUtils {
 
             JSONObject movie = movieArray.getJSONObject(i);
             String title = movie.getString(ORIGINAL_TITLE);
-            String poster = movie.getString(POSTER_PATH);
+            String poster = MOVIE_POSTER_BASE + MOVIE_POSTER_SIZE + movie.getString(POSTER_PATH);
             String overview = movie.getString(OVERVIEW);
             String voteAverage = movie.getString(VOTE_AVERAGE);
             String releaseDate = movie.getString(RELEASE_DATE);
