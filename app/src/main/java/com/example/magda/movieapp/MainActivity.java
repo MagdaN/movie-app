@@ -19,6 +19,11 @@ import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 
 import java.net.URL;
 
+/**
+ * The code is based on the code from udacities sunshine app.
+ * (https://github.com/udacity/ud851-Sunshine).
+ */
+
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private TextView mErrorMessageDisplay;

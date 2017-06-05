@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+/**
+ * The code is based on the code from udacities sunshine app.
+ * (https://github.com/udacity/ud851-Sunshine).
+ */
+
 
 public class MovieDetailActivity extends AppCompatActivity {
 

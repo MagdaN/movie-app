@@ -6,6 +6,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * These utilities will be used to parse the json response to an Array of MovieDBEntry objects.
+ * The code is based on the code from udacities sunshine app.
+ * (https://github.com/udacity/ud851-Sunshine).
+ */
+
 
 public final class OpenMoviesJsonUtils {
 

@@ -26,6 +26,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * These utilities will be used to communicate with the movie database servers.
+ * The code is based on the code from udacities sunshine app.
+ * (https://github.com/udacity/ud851-Sunshine).
+ */
+
 public final class NetworkUtils {
 
     private static final String MOVIE_DB_URL =
