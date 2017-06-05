@@ -2,27 +2,21 @@ package com.example.magda.movieapp;
 
 
 import android.content.Context;
-import android.graphics.Movie;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     private MovieDBEntry[] mMovieData;
 
     private final MovieAdapterOnClickHandler mClickHandler;
-    private Context mContext;
+    private final Context mContext;
 
     public MovieAdapter(MovieAdapterOnClickHandler clickHandler, Context context)
     {

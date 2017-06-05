@@ -3,17 +3,13 @@ package com.example.magda.movieapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by magda on 03.06.17.
- */
-
 public class MovieDBEntry implements Parcelable {
 
-    private String mTitle;
-    private String mPoster;
-    private String mOverview;
-    private String mVoteAverage;
-    private String mReleaseDate;
+    private final String mTitle;
+    private final String mPoster;
+    private final String mOverview;
+    private final String mVoteAverage;
+    private final String mReleaseDate;
 
     public MovieDBEntry(String title, String poster, String overview,
                  String voteAverage, String releaseDate){
@@ -60,39 +56,20 @@ public class MovieDBEntry implements Parcelable {
         return mTitle;
     }
 
-    public void setmTitle(String mTitle) {
-        this.mTitle = mTitle;
-    }
-
     public String getmPoster() {
         return mPoster;
-    }
-
-    public void setmPoster(String mPoster) {
-        this.mPoster = mPoster;
     }
 
     public String getmOverview() {
         return mOverview;
     }
 
-    public void setmOverview(String mOverview) {
-        this.mOverview = mOverview;
-    }
-
     public String getmVoteAverage() {
         return mVoteAverage;
-    }
-
-    public void setmVoteAverage(String mVoteAverage) {
-        this.mVoteAverage = mVoteAverage;
     }
 
     public String getmReleaseDate() {
         return mReleaseDate;
     }
 
-    public void setmReleaseDate(String mReleaseDate) {
-        this.mReleaseDate = mReleaseDate;
-    }
 }

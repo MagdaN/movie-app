@@ -4,11 +4,11 @@
     <item
         android:id="@+id/sort_by_popularity"
         android:orderInCategory="1"
-        android:title="Sort by Popularity"
+        android:title="@string/sort_by_popularity"
         app:showAsAction="never" />
     <item
         android:id="@+id/sort_by_votes"
         android:orderInCategory="2"
-        android:title="Sort by Votes"
+        android:title="@string/sort_by_votes"
         app:showAsAction="never" />
 </menu>
