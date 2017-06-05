@@ -1,23 +1,15 @@
 package com.example.magda.movieapp.utilities;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.util.Log;
-
 import com.example.magda.movieapp.MovieDBEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
-import java.util.List;
 
 public final class OpenMoviesJsonUtils {
 
-    private static final String TAG = OpenMoviesJsonUtils.class.getSimpleName();
-
-    public static MovieDBEntry[] getSimpleMovieStringsFromJson(Context context, String movieJsonStr)
+    public static MovieDBEntry[] getSimpleMovieStringsFromJson(String movieJsonStr)
             throws JSONException {
 
         final String MOVIE_POSTER_BASE = "http://image.tmdb.org/t/p/";
@@ -30,12 +22,12 @@ public final class OpenMoviesJsonUtils {
         final String VOTE_AVERAGE = "vote_average";
         final String RELEASE_DATE = "release_date";
 
-        MovieDBEntry[] parsedMovieData = null;
+        MovieDBEntry[] parsedMovieData;
 
         JSONObject movieJson = new JSONObject(movieJsonStr);
 
         if (movieJson.has(SUCCESS)) {
-            if (movieJson.getString(SUCCESS) == "false") {
+            if (movieJson.getString(SUCCESS).equals("false")) {
                 return null;
             }
         }

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">MovieApp</string>
     <string name="error_message">An error has occurred, please try again!</string>
+    <string name="content_description_poster">Poster of Movie</string>
+    <string name="sort_by_popularity">Sort by Popularity</string>
+    <string name="sort_by_votes">Sort by Votes</string>
+    <string name="votes">%1s/10</string>
 </resources>

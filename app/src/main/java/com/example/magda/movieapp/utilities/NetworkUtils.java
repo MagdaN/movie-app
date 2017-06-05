@@ -16,7 +16,6 @@
 package com.example.magda.movieapp.utilities;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.example.magda.movieapp.APIKeys;
 
@@ -27,28 +26,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-/**
- * These utilities will be used to communicate with the weather servers.
- */
 public final class NetworkUtils {
-
-    private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String MOVIE_DB_URL =
             "https://api.themoviedb.org/3/discover/movie";
 
-    private static final String MIVIE_DB_BASE_URL = MOVIE_DB_URL;
-
+    private static final String MOVIE_DB_BASE_URL = MOVIE_DB_URL;
 
     private static final String apiKey = APIKeys.getmMovieDBAPIKey();
-    private static final String sortByPopolarity = "popularity.desc";
 
-
-    final static String API_PARAM = "api_key";
-    final static String SORT_PARAM = "sort_by";
+    private final static String API_PARAM = "api_key";
+    private final static String SORT_PARAM = "sort_by";
 
     public static URL buildUrl(String sortByQuery) {
-        Uri builtUri = Uri.parse(MIVIE_DB_BASE_URL).buildUpon()
+        Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendQueryParameter(SORT_PARAM, sortByQuery)
                 .appendQueryParameter(API_PARAM, apiKey)
                 .build();
@@ -60,31 +51,9 @@ public final class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built URI " + url);
-
         return url;
     }
 
-    /**
-     * Builds the URL used to talk to the weather server using latitude and longitude of a
-     * location.
-     *
-     * @param lat The latitude of the location
-     * @param lon The longitude of the location
-     * @return The Url to use to query the weather server.
-     */
-    public static URL buildUrl(Double lat, Double lon) {
-        /** This will be implemented in a future lesson **/
-        return null;
-    }
-
-    /**
-     * This method returns the entire result from the HTTP response.
-     *
-     * @param url The URL to fetch the HTTP response from.
-     * @return The contents of the HTTP response.
-     * @throws IOException Related to network and stream reading
-     */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {

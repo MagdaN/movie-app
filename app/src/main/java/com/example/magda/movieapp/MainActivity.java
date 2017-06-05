@@ -2,14 +2,11 @@ package com.example.magda.movieapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,11 +18,8 @@ import com.example.magda.movieapp.utilities.NetworkUtils;
 import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 
 import java.net.URL;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
@@ -41,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_movies);
         int numberOfColumns = 2;
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this, numberOfColumns);
@@ -101,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, MovieDBEntry[]> {
+    private class FetchMoviesTask extends AsyncTask<String, Void, MovieDBEntry[]> {
 
         @Override
         protected void onPreExecute() {
@@ -136,10 +130,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 String jsonMovieResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestUrl);
 
-                MovieDBEntry[] simpleJsonMovieData = OpenMoviesJsonUtils
-                        .getSimpleMovieStringsFromJson(MainActivity.this, jsonMovieResponse);
+                return OpenMoviesJsonUtils
+                        .getSimpleMovieStringsFromJson(jsonMovieResponse);
 
-                return simpleJsonMovieData;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
