@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieData("popularity.desc");
+        loadMovieData("popularity");
     }
 
     @Override
@@ -82,11 +82,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int id = item.getItemId();
 
         if (id == R.id.sort_by_popularity) {
-            loadMovieData("popularity.desc");
+            loadMovieData("popularity");
         }
 
         if (id == R.id.sort_by_votes) {
-            loadMovieData("vote_count.desc");
+            loadMovieData("rates");
         }
 
         return super.onOptionsItemSelected(item);
