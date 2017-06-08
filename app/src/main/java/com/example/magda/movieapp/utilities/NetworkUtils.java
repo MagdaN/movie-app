@@ -34,19 +34,26 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
-    private static final String MOVIE_DB_URL =
-            "https://api.themoviedb.org/3/discover/movie";
+    private static final String MOVIE_DB_URL_POPULAR =
+            "https://api.themoviedb.org/3/movie/popular";
 
-    private static final String MOVIE_DB_BASE_URL = MOVIE_DB_URL;
+    private static final String MOVIE_DB_URL_TOP_RATED =
+            "https://api.themoviedb.org/3/movie/top_rated";
 
     private static final String apiKey = APIKeys.getmMovieDBAPIKey();
 
     private final static String API_PARAM = "api_key";
-    private final static String SORT_PARAM = "sort_by";
+
 
     public static URL buildUrl(String sortByQuery) {
+
+        String MOVIE_DB_BASE_URL = MOVIE_DB_URL_POPULAR;
+
+        if(sortByQuery.equals("rates")) {
+            MOVIE_DB_BASE_URL = MOVIE_DB_URL_TOP_RATED;
+        }
+
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
-                .appendQueryParameter(SORT_PARAM, sortByQuery)
                 .appendQueryParameter(API_PARAM, apiKey)
                 .build();
 
