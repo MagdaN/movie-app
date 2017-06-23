@@ -18,6 +18,7 @@ package com.example.magda.movieapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,7 +60,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_movies);
-        int numberOfColumns = 2;
+
+        int numberOfColumns = 4;
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            numberOfColumns = 2;
+        }
+
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this, numberOfColumns);
         mRecyclerView.setLayoutManager(layoutManager);
