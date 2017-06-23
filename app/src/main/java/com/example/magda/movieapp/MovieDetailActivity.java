@@ -45,6 +45,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mMovie = intentThatStartedThisActivity.getParcelableExtra("movie_detail");
                 mMovieTitle.setText(mMovie.getmTitle());
 
+                getSupportActionBar().setTitle(getResources().getString(R.string.movie_detail_title));
+
                 String url = mMovie.getmPoster();
 
                 Picasso.with(getApplicationContext()).load(url).into(mMoviePoster);

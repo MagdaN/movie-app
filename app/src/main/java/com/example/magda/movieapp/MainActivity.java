@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
+        getSupportActionBar().setTitle(getResources().getString(R.string.movie_list_title));
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_movies);
 
         int numberOfColumns = 4;
