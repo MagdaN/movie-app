@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
+    private String mSorting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +69,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieData("popularity");
+        if(savedInstanceState != null) {
+            mSorting = savedInstanceState.getString("CURRENT_SORTING");
+        } else {
+            mSorting = "popularity";
+        }
+
+        loadMovieData();
     }
 
     @Override
@@ -82,11 +90,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int id = item.getItemId();
 
         if (id == R.id.sort_by_popularity) {
-            loadMovieData("popularity");
+            mSorting = "popularity";
+            loadMovieData();
         }
 
         if (id == R.id.sort_by_votes) {
-            loadMovieData("rates");
+            mSorting = "rates";
+            loadMovieData();
         }
 
         return super.onOptionsItemSelected(item);
@@ -101,9 +111,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(intentToStartMovieDetailActivity);
     }
 
-    private void loadMovieData(String sortQuery) {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+            outState.putString("CURRENT_SORTING", mSorting);
+    }
+
+    private void loadMovieData() {
         showMovieDataView();
-        new FetchMoviesTask().execute(sortQuery);
+        new FetchMoviesTask().execute(mSorting);
     }
 
     private void showMovieDataView() {
