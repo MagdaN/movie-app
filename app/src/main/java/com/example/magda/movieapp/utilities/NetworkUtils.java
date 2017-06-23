@@ -17,7 +17,7 @@ package com.example.magda.movieapp.utilities;
 
 import android.net.Uri;
 
-import com.example.magda.movieapp.APIKeys;
+import com.example.magda.movieapp.BuildConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +40,7 @@ public final class NetworkUtils {
     private static final String MOVIE_DB_URL_TOP_RATED =
             "https://api.themoviedb.org/3/movie/top_rated";
 
-    private static final String apiKey = APIKeys.getmMovieDBAPIKey();
+    private static final String apiKey = BuildConfig.THE_MOVIE_DB_API_TOKEN;
 
     private final static String API_PARAM = "api_key";
 
