@@ -10,14 +10,18 @@ public class MovieDBEntry implements Parcelable {
     private final String mOverview;
     private final String mVoteAverage;
     private final String mReleaseDate;
+    private final String mMovieDbId;
+
 
     public MovieDBEntry(String title, String poster, String overview,
-                 String voteAverage, String releaseDate){
+                 String voteAverage, String releaseDate, String movieDbId){
+
         mTitle = title;
         mPoster = poster;
         mOverview = overview;
         mVoteAverage = voteAverage;
         mReleaseDate = releaseDate;
+        mMovieDbId = movieDbId;
     }
 
     @Override
@@ -32,6 +36,7 @@ public class MovieDBEntry implements Parcelable {
         dest.writeString(mOverview);
         dest.writeString(mVoteAverage);
         dest.writeString(mReleaseDate);
+        dest.writeString(mMovieDbId);
     }
 
     private MovieDBEntry(Parcel in) {
@@ -40,6 +45,7 @@ public class MovieDBEntry implements Parcelable {
         mOverview = in.readString();
         mVoteAverage = in.readString();
         mReleaseDate = in.readString();
+        mMovieDbId = in.readString();
     }
 
     public static final Parcelable.Creator<MovieDBEntry> CREATOR = new Parcelable.Creator<MovieDBEntry>() {
@@ -71,5 +77,7 @@ public class MovieDBEntry implements Parcelable {
     public String getmReleaseDate() {
         return mReleaseDate;
     }
+
+    public String getmMovieDbId() { return mMovieDbId; }
 
 }
