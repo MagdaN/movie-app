@@ -6,16 +6,30 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.magda.movieapp.data.FavouriteMoviesContract;
 import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
+import com.example.magda.movieapp.utilities.NetworkUtils;
+import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
+
 import com.squareup.picasso.Picasso;
+
+import java.net.URL;
 
 /**
  * The code is based on the code from udacities sunshine app.
@@ -27,7 +41,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     MovieDBEntry mMovie;
     private SQLiteDatabase mDb;
-
+    private ReviewAdapter mReviewAdapter;
+    LinearLayout mReviews;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +52,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView mMovieReleaseDate;
         TextView mMovieRatings;
         TextView mMovieSynopsis;
+        RecyclerView mRecyclerView;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail);
@@ -46,11 +62,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         mMovieReleaseDate = (TextView) findViewById(R.id.tv_movie_detail_release_date);
         mMovieRatings = (TextView) findViewById(R.id.tv_movie_detail_ratings);
         mMovieSynopsis = (TextView) findViewById(R.id.tv_movie_detail_synopsis);
+        mReviews = (LinearLayout) findViewById(R.id.lv_reviews);
 
         Intent intentThatStartedThisActivity = getIntent();
 
         FavouriteMoviesDbHelper dbHelper = new FavouriteMoviesDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_reviews);
+
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        mReviewAdapter = new ReviewAdapter(this);
+
+        mRecyclerView.setAdapter(mReviewAdapter);
 
         if(intentThatStartedThisActivity != null) {
             if(intentThatStartedThisActivity.hasExtra("movie_detail"))
@@ -69,6 +98,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Resources res = getResources();
                 mMovieRatings.setText(String.format(res.getString(R.string.votes), ratings));
                 mMovieSynopsis.setText(mMovie.getmOverview());
+
+                new FetchMovieDetailTask().execute(mMovie.getmMovieDbId());
             }
         }
     }
@@ -87,7 +118,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if (id == R.id.add_to_favourite_movies) {
             long value = addMovieToFavourites(mMovie);
-            Log.v("ADDED_TO_DB", Long.toString(value));
         }
 
         return super.onOptionsItemSelected(item);
@@ -103,4 +133,40 @@ public class MovieDetailActivity extends AppCompatActivity {
         cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID, movieDBEntry.getmMovieDbId());
         return mDb.insert(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME, null, cv);
     }
+
+    private class FetchMovieDetailTask extends AsyncTask <String, Void, MovieDBReview[]> {
+
+        @Override
+        protected void onPostExecute(MovieDBReview[] reviewData) {
+            if(reviewData.length == 0 || reviewData == null ){
+                mReviews.setVisibility(View.INVISIBLE);
+            }
+            else {
+                mReviewAdapter.setmReviewData(reviewData);
+            }
+        }
+
+        @Override
+        protected MovieDBReview[] doInBackground(String... params) {
+
+            String id = params[0];
+
+            URL movieRequestUrl = NetworkUtils
+                    .buildMovieReviewsUrl(id);
+
+            try {
+                String jsonMovieResponse = NetworkUtils
+                        .getResponseFromHttpUrl(movieRequestUrl);
+
+                return OpenMoviesJsonUtils.getReviewsStringsFromJson(jsonMovieResponse);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+
+        }
+    }
+
 }
