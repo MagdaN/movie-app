@@ -1,12 +1,20 @@
 package com.example.magda.movieapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.magda.movieapp.data.FavouriteMoviesContract;
+import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -17,11 +25,13 @@ import com.squareup.picasso.Picasso;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    MovieDBEntry mMovie;
+    private SQLiteDatabase mDb;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        MovieDBEntry mMovie;
         TextView mMovieTitle;
         ImageView mMoviePoster;
         TextView mMovieReleaseDate;
@@ -38,6 +48,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         mMovieSynopsis = (TextView) findViewById(R.id.tv_movie_detail_synopsis);
 
         Intent intentThatStartedThisActivity = getIntent();
+
+        FavouriteMoviesDbHelper dbHelper = new FavouriteMoviesDbHelper(this);
+        mDb = dbHelper.getWritableDatabase();
 
         if(intentThatStartedThisActivity != null) {
             if(intentThatStartedThisActivity.hasExtra("movie_detail"))
@@ -58,5 +71,36 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mMovieSynopsis.setText(mMovie.getmOverview());
             }
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.add_to_favourite_movies) {
+            long value = addMovieToFavourites(mMovie);
+            Log.v("ADDED_TO_DB", Long.toString(value));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public long addMovieToFavourites(MovieDBEntry movieDBEntry) {
+        ContentValues cv = new ContentValues();
+        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TITLE, movieDBEntry.getmTitle());
+        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_POSTER, movieDBEntry.getmPoster());
+        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_RELEASE_DATE, movieDBEntry.getmReleaseDate());
+        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE, movieDBEntry.getmVoteAverage());
+        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_OVERVIEW, movieDBEntry.getmOverview());
+        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID, movieDBEntry.getmMovieDbId());
+        return mDb.insert(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME, null, cv);
     }
 }

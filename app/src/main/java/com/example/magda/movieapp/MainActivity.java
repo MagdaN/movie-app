@@ -19,11 +19,14 @@ package com.example.magda.movieapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +34,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.magda.movieapp.data.FavouriteMoviesContract;
+import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
 import com.example.magda.movieapp.utilities.NetworkUtils;
 import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mMovieAdapter;
 
     private String mSorting;
+    private SQLiteDatabase mDb;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +72,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         int numberOfColumns = 4;
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             numberOfColumns = 2;
         }
+
+        FavouriteMoviesDbHelper dbHelper = new FavouriteMoviesDbHelper(this);
+        mDb = dbHelper.getReadableDatabase();
 
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this, numberOfColumns);
@@ -78,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mSorting = savedInstanceState.getString("CURRENT_SORTING");
         } else {
             mSorting = "popularity";
@@ -108,6 +118,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             loadMovieData();
         }
 
+        if (id == R.id.favourites) {
+            mSorting = "favourites";
+            loadMovieData();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -123,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-            outState.putString("CURRENT_SORTING", mSorting);
+        outState.putString("CURRENT_SORTING", mSorting);
     }
 
     private void loadMovieData() {
@@ -140,6 +155,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
+
+    private Cursor getFavouritesFromDb() {
+
+        return mDb.query(
+                FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE
+        );
+    }
+
 
     private class FetchMoviesTask extends AsyncTask<String, Void, MovieDBEntry[]> {
 
@@ -168,21 +197,56 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 return null;
             }
 
-            String sortQuery = params[0];
-            URL movieRequestUrl = NetworkUtils
-                    .buildUrl(sortQuery);
+            if (params[0].equals("favourites")) {
 
-            try {
-                String jsonMovieResponse = NetworkUtils
-                        .getResponseFromHttpUrl(movieRequestUrl);
+                MovieDBEntry[] retrievedMovieData;
+                Cursor cursor = getFavouritesFromDb();
+                int size = cursor.getCount();
+                retrievedMovieData = new MovieDBEntry[size];
 
-                return OpenMoviesJsonUtils
-                        .getSimpleMovieStringsFromJson(jsonMovieResponse);
+                int i = 0;
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                final String MOVIE_POSTER_BASE = "http://image.tmdb.org/t/p/";
+                final String MOVIE_POSTER_SIZE = "w185";
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        String title = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TITLE));
+                        String poster = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_POSTER));
+                        String overview = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_OVERVIEW));
+                        String voteAverage = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE));
+                        String releaseDate = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_RELEASE_DATE));
+                        String movieId = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID));
+
+                        retrievedMovieData[i] = new MovieDBEntry(title, poster, overview, voteAverage, releaseDate, movieId);
+
+                        i++;
+
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+
+                return retrievedMovieData;
+
+            } else {
+
+                String sortQuery = params[0];
+                URL movieRequestUrl = NetworkUtils
+                        .buildUrl(sortQuery);
+
+                try {
+                    String jsonMovieResponse = NetworkUtils
+                            .getResponseFromHttpUrl(movieRequestUrl);
+
+                    return OpenMoviesJsonUtils
+                            .getSimpleMovieStringsFromJson(jsonMovieResponse);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         }
     }
+
 }
