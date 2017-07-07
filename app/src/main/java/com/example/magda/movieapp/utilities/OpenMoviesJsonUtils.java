@@ -17,6 +17,7 @@
 package com.example.magda.movieapp.utilities;
 
 import com.example.magda.movieapp.MovieDBEntry;
+import com.example.magda.movieapp.MovieDBReview;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +74,34 @@ public final class OpenMoviesJsonUtils {
         }
 
         return parsedMovieData;
+    }
+
+    public static MovieDBReview[] getReviewsStringsFromJson(String movieJsonStr)
+            throws JSONException {
+
+        final String REVIEW_LIST = "results";
+        final String AUTHOR = "author";
+        final String CONTENT = "content";
+
+        MovieDBReview[] parsedReviewData;
+
+        JSONObject movieJson = new JSONObject(movieJsonStr);
+
+        JSONArray movieArray = movieJson.getJSONArray(REVIEW_LIST);
+
+        parsedReviewData = new MovieDBReview[movieArray.length()];
+
+        for (int i = 0; i < movieArray.length(); i++) {
+
+
+            JSONObject review = movieArray.getJSONObject(i);
+            String author = review.getString(AUTHOR);
+            String content = review.getString(CONTENT);
+
+            parsedReviewData[i] = new MovieDBReview(author, content);
+        }
+
+        return parsedReviewData;
     }
 
 }

@@ -7,4 +7,6 @@
     <string name="votes">%1s/10</string>
     <string name="movie_list_title">Popular Moview</string>
     <string name="movie_detail_title">Movie Detail</string>
+    <string name="add_to_favourite_movies">Add to Favourite Movies</string>
+    <string name="reviews">Reviews</string>
 </resources>

@@ -34,6 +34,9 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
+    private static final String MOVIE_DB_URL_MOVIE_DETAIL =
+            "https://api.themoviedb.org/3/movie/";
+
     private static final String MOVIE_DB_URL_POPULAR =
             "https://api.themoviedb.org/3/movie/popular";
 
@@ -65,6 +68,26 @@ public final class NetworkUtils {
         }
 
         return url;
+    }
+
+    public static URL buildMovieReviewsUrl(String id) {
+
+        String MOVIE_DB_BASE_URL = MOVIE_DB_URL_MOVIE_DETAIL + id + "/reviews";
+
+        Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
+                .appendQueryParameter(API_PARAM, apiKey)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
