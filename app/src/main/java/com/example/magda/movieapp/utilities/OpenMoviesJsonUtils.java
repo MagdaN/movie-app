@@ -44,6 +44,7 @@ public final class OpenMoviesJsonUtils {
         final String OVERVIEW = "overview";
         final String VOTE_AVERAGE = "vote_average";
         final String RELEASE_DATE = "release_date";
+        final String MOVIE_DB_ID = "id";
 
         MovieDBEntry[] parsedMovieData;
 
@@ -69,8 +70,9 @@ public final class OpenMoviesJsonUtils {
             String overview = movie.getString(OVERVIEW);
             String voteAverage = movie.getString(VOTE_AVERAGE);
             String releaseDate = movie.getString(RELEASE_DATE);
+            String id = movie.getString(MOVIE_DB_ID);
 
-            parsedMovieData[i] = new MovieDBEntry(title, poster, overview, voteAverage, releaseDate);
+            parsedMovieData[i] = new MovieDBEntry(title, poster, overview, voteAverage, releaseDate, id);
         }
 
         return parsedMovieData;

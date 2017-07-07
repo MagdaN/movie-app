@@ -1,7 +1,9 @@
 package com.example.magda.movieapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +26,7 @@ import com.example.magda.movieapp.data.FavouriteMoviesContract;
 import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
 import com.example.magda.movieapp.utilities.NetworkUtils;
 import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
+
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -35,7 +39,6 @@ import java.net.URL;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-
     MovieDBEntry mMovie;
     private SQLiteDatabase mDb;
     private ReviewAdapter mReviewAdapter;
@@ -44,7 +47,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        MovieDBEntry mMovie;
         TextView mMovieTitle;
         ImageView mMoviePoster;
         TextView mMovieReleaseDate;
@@ -101,7 +103,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     @Override
