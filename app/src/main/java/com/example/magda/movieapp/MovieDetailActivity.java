@@ -1,8 +1,10 @@
 package com.example.magda.movieapp;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.magda.movieapp.data.FavouriteMoviesContract;
 import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
@@ -30,6 +33,8 @@ import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+
+import static java.lang.Long.parseLong;
 
 /**
  * The code is based on the code from udacities sunshine app.
@@ -43,6 +48,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private SQLiteDatabase mDb;
     private ReviewAdapter mReviewAdapter;
     LinearLayout mReviews;
+    boolean mIsFavourite;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,10 +87,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mReviewAdapter);
 
-        if(intentThatStartedThisActivity != null) {
-            if(intentThatStartedThisActivity.hasExtra("movie_detail"))
-            {
+        if (intentThatStartedThisActivity != null) {
+            if (intentThatStartedThisActivity.hasExtra("movie_detail")) {
                 mMovie = intentThatStartedThisActivity.getParcelableExtra("movie_detail");
+
+                mIsFavourite = hasFavourite(mMovie);
+
                 mMovieTitle.setText(mMovie.getmTitle());
 
                 getSupportActionBar().setTitle(getResources().getString(R.string.movie_detail_title));
@@ -104,6 +112,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if(mIsFavourite) {
+            menu.removeItem(R.id.add_to_favourite_movies);
+        } else {
+            menu.removeItem(R.id.remove_from_favourite_movies);
+        }
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -117,31 +135,93 @@ public class MovieDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.add_to_favourite_movies) {
-            long value = addMovieToFavourites(mMovie);
+            addMovieToFavouritesIfNotExists(mMovie);
+        }
+
+        if (id == R.id.remove_from_favourite_movies) {
+            removeMovieFromFavourites(mMovie);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public long addMovieToFavourites(MovieDBEntry movieDBEntry) {
-        ContentValues cv = new ContentValues();
-        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TITLE, movieDBEntry.getmTitle());
-        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_POSTER, movieDBEntry.getmPoster());
-        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_RELEASE_DATE, movieDBEntry.getmReleaseDate());
-        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE, movieDBEntry.getmVoteAverage());
-        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_OVERVIEW, movieDBEntry.getmOverview());
-        cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID, movieDBEntry.getmMovieDbId());
-        return mDb.insert(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME, null, cv);
+
+    public boolean hasFavourite(MovieDBEntry movieDBEntry) {
+
+        String id = movieDBEntry.getmMovieDbId();
+        String selectQuery = "SELECT  * FROM " + FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME + " WHERE "
+                + FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID + " =?";
+
+        Cursor cursor = mDb.rawQuery(selectQuery, new String[]{id});
+
+        boolean hasObject = false;
+
+        if (cursor.moveToFirst()) {
+            hasObject = true;
+        }
+
+        cursor.close();
+        return hasObject;
     }
 
-    private class FetchMovieDetailTask extends AsyncTask <String, Void, MovieDBReview[]> {
+    public int removeMovieFromFavourites(MovieDBEntry movieDBEntry) {
+
+        String id = movieDBEntry.getmMovieDbId();
+
+        int result = mDb.delete(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME,
+                FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID + "=" + id, null);
+
+        if (result > 0) {
+
+            Context context = getApplicationContext();
+            CharSequence text = getString(R.string.toast_removed_favourite);
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
+            mIsFavourite = false;
+            invalidateOptionsMenu();
+        }
+
+        return result;
+
+    }
+
+    public long addMovieToFavouritesIfNotExists(MovieDBEntry movieDBEntry) {
+
+        if (!mIsFavourite) {
+            ContentValues cv = new ContentValues();
+            cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TITLE, movieDBEntry.getmTitle());
+            cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_POSTER, movieDBEntry.getmPoster());
+            cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_RELEASE_DATE, movieDBEntry.getmReleaseDate());
+            cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE, movieDBEntry.getmVoteAverage());
+            cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_OVERVIEW, movieDBEntry.getmOverview());
+            cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID, movieDBEntry.getmMovieDbId());
+            long result = mDb.insert(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME, null, cv);
+
+            if (result != -1) {
+                Context context = getApplicationContext();
+                CharSequence text = getString(R.string.toast_added_favourite);
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+                mIsFavourite = true;
+                invalidateOptionsMenu();
+            }
+
+            return result;
+        } else {
+            return -1;
+        }
+    }
+
+    private class FetchMovieDetailTask extends AsyncTask<String, Void, MovieDBReview[]> {
 
         @Override
         protected void onPostExecute(MovieDBReview[] reviewData) {
-            if(reviewData.length == 0 || reviewData == null ){
-                mReviews.setVisibility(View.INVISIBLE);
-            }
-            else {
+            if (reviewData.length != 0 & reviewData != null) {
+                mReviews.setVisibility(View.VISIBLE);
                 mReviewAdapter.setmReviewData(reviewData);
             }
         }

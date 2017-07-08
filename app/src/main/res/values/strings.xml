@@ -6,8 +6,11 @@
     <string name="favourites">Display Favourites</string>
     <string name="sort_by_votes">Sort by Votes</string>
     <string name="votes">%1s/10</string>
-    <string name="movie_list_title">Popular Moview</string>
+    <string name="movie_list_title">Popular Movies</string>
     <string name="movie_detail_title">Movie Detail</string>
-    <string name="add_to_favourite_movies">Add to Favourite Movies</string>
+    <string name="add_to_favourite_movies">Add to Favourites</string>
     <string name="reviews">Reviews</string>
+    <string name="toast_added_favourite">Added Movie to Favourites</string>
+    <string name="toast_removed_favourite">Removed Movie From Favourites</string>
+    <string name="remove_from_favourite_movies">Remove from Favourites</string>
 </resources>
