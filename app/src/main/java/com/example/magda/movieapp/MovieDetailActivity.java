@@ -82,6 +82,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 new LinearLayoutManager(this);
         mReviewsRecyclerView.setLayoutManager(reviewsLayoutManager);
         mReviewsRecyclerView.setHasFixedSize(true);
+        mReviewsRecyclerView.setNestedScrollingEnabled(false);
         mReviewAdapter = new ReviewAdapter(this);
         mReviewsRecyclerView.setAdapter(mReviewAdapter);
 
@@ -90,11 +91,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 new LinearLayoutManager(this);
         mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
         mTrailersRecyclerView.setHasFixedSize(true);
+        mTrailersRecyclerView.setNestedScrollingEnabled(false);
         mTrailerAdapter = new TrailerAdapter(this, this);
         mTrailersRecyclerView.setAdapter(mTrailerAdapter);
-
-
-
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("movie_detail")) {
@@ -162,6 +161,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         if(intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
+
         }
     }
 
