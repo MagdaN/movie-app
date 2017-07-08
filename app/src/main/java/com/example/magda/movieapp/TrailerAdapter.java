@@ -35,10 +35,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     public void onBindViewHolder(TrailerAdapter.TrailerAdapterViewHolder holder, int position) {
         MovieDBTrailer trailerOnThisPosition = mTrailerData[position];
         String name = trailerOnThisPosition.getmName();
-        String type = trailerOnThisPosition.getmType();
-
         holder.mTrailerName.setText(name);
-        holder.mTrailerType.setText(type);
     }
 
     @Override
@@ -58,12 +55,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView mTrailerName;
-        public final TextView mTrailerType;
+        //public final TextView mTrailerType;
 
         public TrailerAdapterViewHolder(View view) {
             super(view);
             mTrailerName = (TextView) view.findViewById(R.id.tv_trailer_name);
-            mTrailerType = (TextView) view.findViewById(R.id.tv_trailer_type);
+            //mTrailerType = (TextView) view.findViewById(R.id.tv_trailer_type);
             view.setOnClickListener(this);
         }
 
