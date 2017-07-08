@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -42,13 +40,15 @@ import static java.lang.Long.parseLong;
  */
 
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
-    MovieDBEntry mMovie;
+    private MovieDBEntry mMovie;
     private SQLiteDatabase mDb;
     private ReviewAdapter mReviewAdapter;
-    LinearLayout mReviews;
-    boolean mIsFavourite;
+    private TrailerAdapter mTrailerAdapter;
+    private LinearLayout mReviews;
+    private LinearLayout mTrailers;
+    private boolean mIsFavourite;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         TextView mMovieReleaseDate;
         TextView mMovieRatings;
         TextView mMovieSynopsis;
-        RecyclerView mRecyclerView;
+        RecyclerView mReviewsRecyclerView;
+        RecyclerView mTrailersRecyclerView;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail);
@@ -69,23 +70,31 @@ public class MovieDetailActivity extends AppCompatActivity {
         mMovieRatings = (TextView) findViewById(R.id.tv_movie_detail_ratings);
         mMovieSynopsis = (TextView) findViewById(R.id.tv_movie_detail_synopsis);
         mReviews = (LinearLayout) findViewById(R.id.lv_reviews);
+        mTrailers = (LinearLayout) findViewById(R.id.lv_trailors);
 
         Intent intentThatStartedThisActivity = getIntent();
 
         FavouriteMoviesDbHelper dbHelper = new FavouriteMoviesDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_reviews);
-
-        LinearLayoutManager layoutManager =
+        mReviewsRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_reviews);
+        LinearLayoutManager reviewsLayoutManager =
                 new LinearLayoutManager(this);
-
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
-
+        mReviewsRecyclerView.setLayoutManager(reviewsLayoutManager);
+        mReviewsRecyclerView.setHasFixedSize(true);
         mReviewAdapter = new ReviewAdapter(this);
+        mReviewsRecyclerView.setAdapter(mReviewAdapter);
 
-        mRecyclerView.setAdapter(mReviewAdapter);
+        mTrailersRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_trailers);
+        LinearLayoutManager trailersLayoutManager =
+                new LinearLayoutManager(this);
+        mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
+        mTrailersRecyclerView.setHasFixedSize(true);
+        mTrailerAdapter = new TrailerAdapter(this, this);
+        mTrailersRecyclerView.setAdapter(mTrailerAdapter);
+
+
+
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("movie_detail")) {
@@ -107,7 +116,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mMovieRatings.setText(String.format(res.getString(R.string.votes), ratings));
                 mMovieSynopsis.setText(mMovie.getmOverview());
 
-                new FetchMovieDetailTask().execute(mMovie.getmMovieDbId());
+                new FetchMovieReviewTask().execute(mMovie.getmMovieDbId());
+                new FetchMovieTrailersTask().execute(mMovie.getmMovieDbId());
             }
         }
     }
@@ -145,6 +155,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(MovieDBTrailer trailer) {
+        URL url = NetworkUtils.builYoutubeUrl(trailer.getmKey());
+        Uri uri = Uri.parse(url.toString());
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        if(intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 
     public boolean hasFavourite(MovieDBEntry movieDBEntry) {
 
@@ -216,7 +235,36 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
-    private class FetchMovieDetailTask extends AsyncTask<String, Void, MovieDBReview[]> {
+    private class FetchMovieTrailersTask extends AsyncTask<String, Void, MovieDBTrailer[]> {
+
+        @Override
+        protected void onPostExecute(MovieDBTrailer[] movieDBTrailers) {
+            if (movieDBTrailers.length != 0 & movieDBTrailers != null) {
+                mTrailers.setVisibility(View.VISIBLE);
+                mTrailerAdapter.setmReviewData(movieDBTrailers);
+            }
+        }
+
+        @Override
+        protected MovieDBTrailer[] doInBackground(String... params) {
+
+            String id = params[0];
+            URL movieTrailorsRequestUrl = NetworkUtils
+                    .buildMovieTrailersUrl(id);
+
+            try {
+                String jsonTrailerResponse = NetworkUtils
+                        .getResponseFromHttpUrl(movieTrailorsRequestUrl);
+
+                return OpenMoviesJsonUtils.getTrailersStringsFromJson(jsonTrailerResponse);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    private class FetchMovieReviewTask extends AsyncTask<String, Void, MovieDBReview[]> {
 
         @Override
         protected void onPostExecute(MovieDBReview[] reviewData) {

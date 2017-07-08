@@ -72,6 +72,29 @@
                 android:background="#808080" />
 
             <LinearLayout
+                android:id="@+id/lv_trailors"
+                android:visibility="invisible"
+                android:layout_marginTop="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingBottom="15sp"
+                    android:text="@string/trailers"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_trailers"
+                    android:nestedScrollingEnabled="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/lv_reviews"
                 android:visibility="invisible"
                 android:layout_marginTop="20sp"

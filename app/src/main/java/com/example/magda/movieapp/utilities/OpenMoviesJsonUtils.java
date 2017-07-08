@@ -18,6 +18,7 @@ package com.example.magda.movieapp.utilities;
 
 import com.example.magda.movieapp.MovieDBEntry;
 import com.example.magda.movieapp.MovieDBReview;
+import com.example.magda.movieapp.MovieDBTrailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,6 +105,39 @@ public final class OpenMoviesJsonUtils {
         }
 
         return parsedReviewData;
+    }
+
+    public static MovieDBTrailer[] getTrailersStringsFromJson(String trailerJsonStr)
+            throws JSONException {
+
+        final String TRAILER_LIST = "results";
+        final String NAME = "name";
+        final String SITE = "site";
+        final String KEY = "key";
+        final String TYPE = "type";
+
+
+
+        MovieDBTrailer[] parsedTrailerData;
+
+        JSONObject movieJson = new JSONObject(trailerJsonStr);
+
+        JSONArray movieArray = movieJson.getJSONArray(TRAILER_LIST);
+
+        parsedTrailerData = new MovieDBTrailer[movieArray.length()];
+
+        for (int i = 0; i < movieArray.length(); i++) {
+
+            JSONObject trailer = movieArray.getJSONObject(i);
+            String name = trailer.getString(NAME);
+            String site = trailer.getString(SITE);
+            String key = trailer.getString(KEY);
+            String type = trailer.getString(TYPE);
+
+            parsedTrailerData[i] = new MovieDBTrailer(name, site, key, type);
+        }
+
+        return parsedTrailerData;
     }
 
 }

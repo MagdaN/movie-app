@@ -34,6 +34,11 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
+    private static final String YOUTUBE_BASE_URL =
+            "https://www.youtube.com/watch";
+
+    private static final  String YOUTUBE_PARAM = "v";
+
     private static final String MOVIE_DB_URL_MOVIE_DETAIL =
             "https://api.themoviedb.org/3/movie/";
 
@@ -46,6 +51,7 @@ public final class NetworkUtils {
     private static final String apiKey = BuildConfig.THE_MOVIE_DB_API_TOKEN;
 
     private final static String API_PARAM = "api_key";
+    private final static String LANGUAGE_PARAM = "language";
 
 
     public static URL buildUrl(String sortByQuery) {
@@ -76,6 +82,47 @@ public final class NetworkUtils {
 
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendQueryParameter(API_PARAM, apiKey)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+
+    }
+
+    public static URL builYoutubeUrl(String key) {
+
+        String YOUTUBE_URL = YOUTUBE_BASE_URL;
+
+        Uri builtUri = Uri.parse(YOUTUBE_URL).buildUpon()
+                .appendQueryParameter(YOUTUBE_PARAM, key)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+
+    }
+
+    public static URL buildMovieTrailersUrl(String id) {
+
+        String MOVIE_DB_BASE_URL = MOVIE_DB_URL_MOVIE_DETAIL + id + "/videos";
+
+        Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
+                .appendQueryParameter(API_PARAM, apiKey)
+                .appendQueryParameter(LANGUAGE_PARAM, "en-US")
                 .build();
 
         URL url = null;
