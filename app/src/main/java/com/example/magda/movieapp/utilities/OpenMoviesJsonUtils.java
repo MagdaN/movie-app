@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 /**
  * These utilities will be used to parse the json response to an Array of MovieDBEntry objects.
- * The code is based on the code from udacities sunshine app.
+ * The code is based on the code from udacity's sunshine app.
  * (https://github.com/udacity/ud851-Sunshine).
  */
 
@@ -112,11 +112,7 @@ public final class OpenMoviesJsonUtils {
 
         final String TRAILER_LIST = "results";
         final String NAME = "name";
-        final String SITE = "site";
         final String KEY = "key";
-        final String TYPE = "type";
-
-
 
         MovieDBTrailer[] parsedTrailerData;
 
@@ -130,11 +126,9 @@ public final class OpenMoviesJsonUtils {
 
             JSONObject trailer = movieArray.getJSONObject(i);
             String name = trailer.getString(NAME);
-            String site = trailer.getString(SITE);
             String key = trailer.getString(KEY);
-            String type = trailer.getString(TYPE);
 
-            parsedTrailerData[i] = new MovieDBTrailer(name, site, key, type);
+            parsedTrailerData[i] = new MovieDBTrailer(name, key);
         }
 
         return parsedTrailerData;

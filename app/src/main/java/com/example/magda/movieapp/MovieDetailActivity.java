@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.magda.movieapp.data.FavouriteMoviesContract;
-import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
 import com.example.magda.movieapp.utilities.NetworkUtils;
 import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 
@@ -32,10 +29,8 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
-import static java.lang.Long.parseLong;
-
 /**
- * The code is based on the code from udacities sunshine app.
+ * The code is based on the code from udacity's sunshine app.
  * (https://github.com/udacity/ud851-Sunshine).
  */
 
@@ -69,7 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mMovieRatings = (TextView) findViewById(R.id.tv_movie_detail_ratings);
         mMovieSynopsis = (TextView) findViewById(R.id.tv_movie_detail_synopsis);
         mReviews = (LinearLayout) findViewById(R.id.lv_reviews);
-        mTrailers = (LinearLayout) findViewById(R.id.lv_trailors);
+        mTrailers = (LinearLayout) findViewById(R.id.lv_trailers);
 
         Intent intentThatStartedThisActivity = getIntent();
 
@@ -90,7 +85,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
         mTrailersRecyclerView.setHasFixedSize(true);
         mTrailersRecyclerView.setNestedScrollingEnabled(false);
-        mTrailerAdapter = new TrailerAdapter(this, this);
+        mTrailerAdapter = new TrailerAdapter(this);
         mTrailersRecyclerView.setAdapter(mTrailerAdapter);
 
         if (intentThatStartedThisActivity != null) {
@@ -154,7 +149,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
     @Override
     public void onClick(MovieDBTrailer trailer) {
-        URL url = NetworkUtils.builYoutubeUrl(trailer.getmKey());
+        URL url = NetworkUtils.buildYoutubeUrl(trailer.getmKey());
         Uri uri = Uri.parse(url.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         if(intent.resolveActivity(getPackageManager()) != null) {
@@ -163,7 +158,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         }
     }
 
-    public boolean hasFavourite(MovieDBEntry movieDBEntry) {
+    private boolean hasFavourite(MovieDBEntry movieDBEntry) {
 
         String id = movieDBEntry.getmMovieDbId();
         Uri uri = FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI;
@@ -182,7 +177,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         return hasObject;
     }
 
-    public int removeMovieFromFavourites(MovieDBEntry movieDBEntry) {
+    private void removeMovieFromFavourites(MovieDBEntry movieDBEntry) {
 
         String id = movieDBEntry.getmMovieDbId();
 
@@ -203,11 +198,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
             invalidateOptionsMenu();
         }
 
-        return result;
-
     }
 
-    public void addMovieToFavouritesIfNotExists(MovieDBEntry movieDBEntry) {
+    private void addMovieToFavouritesIfNotExists(MovieDBEntry movieDBEntry) {
 
         if (!mIsFavourite) {
             ContentValues cv = new ContentValues();
@@ -237,7 +230,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         @Override
         protected void onPostExecute(MovieDBTrailer[] movieDBTrailers) {
-            if (movieDBTrailers.length != 0 & movieDBTrailers != null) {
+            if (movieDBTrailers.length != 0) {
                 mTrailers.setVisibility(View.VISIBLE);
                 mTrailerAdapter.setmReviewData(movieDBTrailers);
             }
@@ -247,12 +240,12 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         protected MovieDBTrailer[] doInBackground(String... params) {
 
             String id = params[0];
-            URL movieTrailorsRequestUrl = NetworkUtils
+            URL movieTrailersRequestUrl = NetworkUtils
                     .buildMovieTrailersUrl(id);
 
             try {
                 String jsonTrailerResponse = NetworkUtils
-                        .getResponseFromHttpUrl(movieTrailorsRequestUrl);
+                        .getResponseFromHttpUrl(movieTrailersRequestUrl);
 
                 return OpenMoviesJsonUtils.getTrailersStringsFromJson(jsonTrailerResponse);
             } catch (Exception e) {
@@ -266,7 +259,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         @Override
         protected void onPostExecute(MovieDBReview[] reviewData) {
-            if (reviewData.length != 0 & reviewData != null) {
+            if (reviewData.length != 0) {
                 mReviews.setVisibility(View.VISIBLE);
                 mReviewAdapter.setmReviewData(reviewData);
             }

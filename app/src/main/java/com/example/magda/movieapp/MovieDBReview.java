@@ -2,8 +2,8 @@ package com.example.magda.movieapp;
 
 public class MovieDBReview {
 
-    private String mAuthor;
-    private String mContent;
+    private final String mAuthor;
+    private final String mContent;
 
     public MovieDBReview(String author, String conent) {
         mAuthor = author;

@@ -12,11 +12,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
 
     private MovieDBTrailer[] mTrailerData;
     private final TrailerAdapterOnClickHandler mClickHandler;
-    private Context mContext;
 
-    public TrailerAdapter(TrailerAdapterOnClickHandler clickHandler, Context context) {
+
+    public TrailerAdapter(TrailerAdapterOnClickHandler clickHandler) {
         mClickHandler = clickHandler;
-        mContext = context;
     }
 
     public interface TrailerAdapterOnClickHandler {
@@ -55,12 +54,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView mTrailerName;
-        //public final TextView mTrailerType;
 
         public TrailerAdapterViewHolder(View view) {
             super(view);
             mTrailerName = (TextView) view.findViewById(R.id.tv_trailer_name);
-            //mTrailerType = (TextView) view.findViewById(R.id.tv_trailer_type);
             view.setOnClickListener(this);
         }
 

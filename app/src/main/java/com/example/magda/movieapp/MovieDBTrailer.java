@@ -3,31 +3,21 @@ package com.example.magda.movieapp;
 
 public class MovieDBTrailer {
 
-    String mName;
-    String mSite;
-    String mKey;
-    String mType;
+    private final String mName;
+    private final String mKey;
 
-    public MovieDBTrailer(String name, String site, String key, String type) {
+    public MovieDBTrailer(String name, String key) {
         mName = name;
-        mSite = site;
         mKey = key;
-        mType = type;
     }
 
     public String getmName() {
         return mName;
     }
 
-    public String getmSite() {
-        return mSite;
-    }
-
     public String getmKey() {
         return mKey;
     }
 
-    public String getmType() {
-        return mType;
-    }
+
 }

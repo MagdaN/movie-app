@@ -28,7 +28,7 @@ import java.util.Scanner;
 
 /**
  * These utilities will be used to communicate with the movie database servers.
- * The code is based on the code from udacities sunshine app.
+ * The code is based on the code from udacity's sunshine app.
  * (https://github.com/udacity/ud851-Sunshine).
  */
 
@@ -96,11 +96,9 @@ public final class NetworkUtils {
 
     }
 
-    public static URL builYoutubeUrl(String key) {
+    public static URL buildYoutubeUrl(String key) {
 
-        String YOUTUBE_URL = YOUTUBE_BASE_URL;
-
-        Uri builtUri = Uri.parse(YOUTUBE_URL).buildUpon()
+        Uri builtUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
                 .appendQueryParameter(YOUTUBE_PARAM, key)
                 .build();
 

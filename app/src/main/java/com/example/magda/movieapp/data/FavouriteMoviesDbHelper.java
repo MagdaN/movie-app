@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.magda.movieapp.data.FavouriteMoviesContract.*;
 
 
-public class FavouriteMoviesDbHelper extends SQLiteOpenHelper {
+class FavouriteMoviesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME ="movies.db";
     private static final int DATABASE_VERSION = 2;

@@ -72,7 +72,7 @@
                 android:background="#808080" />
 
             <LinearLayout
-                android:id="@+id/lv_trailors"
+                android:id="@+id/lv_trailers"
                 android:visibility="invisible"
                 android:layout_marginTop="20sp"
                 android:layout_width="match_parent"
@@ -88,7 +88,6 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_trailers"
-                    android:nestedScrollingEnabled="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -112,7 +111,6 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_reviews"
-                    android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

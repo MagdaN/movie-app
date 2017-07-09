@@ -1,12 +1,11 @@
 package com.example.magda.movieapp;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -30,12 +29,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder {
 
         public final TextView mReviewAuthor;
-        public final TextView mReviewConent;
+        public final TextView mReviewContent;
 
         public ReviewAdapterViewHolder(View view) {
             super(view);
             mReviewAuthor = (TextView) view.findViewById(R.id.tv_review_author);
-            mReviewConent = (TextView) view.findViewById(R.id.tv_review_content);
+            mReviewContent = (TextView) view.findViewById(R.id.tv_review_content);
         }
 
     }
@@ -46,8 +45,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         String author = reviewOnThisPosition.getmAuthor();
         String content = reviewOnThisPosition.getmContent();
 
-        holder.mReviewAuthor.setText(author + " wrote:");
-        holder.mReviewConent.setText(content);
+        Resources res = mContext.getResources();
+        holder.mReviewAuthor.setText(String.format(res.getString(R.string.author_wrote), author));
+        holder.mReviewContent.setText(content);
     }
 
     @Override

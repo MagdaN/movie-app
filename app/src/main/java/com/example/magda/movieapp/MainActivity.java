@@ -20,13 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,14 +33,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.magda.movieapp.data.FavouriteMoviesContract;
-import com.example.magda.movieapp.data.FavouriteMoviesDbHelper;
 import com.example.magda.movieapp.utilities.NetworkUtils;
 import com.example.magda.movieapp.utilities.OpenMoviesJsonUtils;
 
 import java.net.URL;
 
 /**
- * The code is based on the code from udacities sunshine app.
+ * The code is based on the code from udacity's sunshine app.
  * (https://github.com/udacity/ud851-Sunshine).
  */
 
@@ -55,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mMovieAdapter;
 
     private String mSorting;
-    private SQLiteDatabase mDb;
 
 
     @Override
@@ -75,9 +71,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             numberOfColumns = 2;
         }
-
-        FavouriteMoviesDbHelper dbHelper = new FavouriteMoviesDbHelper(this);
-        mDb = dbHelper.getReadableDatabase();
 
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this, numberOfColumns);
@@ -213,15 +206,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 MovieDBEntry[] retrievedMovieData;
 
                 Cursor cursor = getFavouritesFromDb();
-                int size = cursor.getCount();
+                int size = cursor != null ? cursor.getCount() : 0;
                 retrievedMovieData = new MovieDBEntry[size];
 
                 int i = 0;
 
-                final String MOVIE_POSTER_BASE = "http://image.tmdb.org/t/p/";
-                final String MOVIE_POSTER_SIZE = "w185";
-
-                if (cursor.moveToFirst()) {
+                if (cursor != null && cursor.moveToFirst()) {
                     do {
                         String title = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TITLE));
                         String poster = cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_POSTER));
@@ -236,7 +226,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                     } while (cursor.moveToNext());
                 }
-                cursor.close();
+
+                if(cursor != null) {
+                    cursor.close();
+                }
+
 
                 return retrievedMovieData;
 

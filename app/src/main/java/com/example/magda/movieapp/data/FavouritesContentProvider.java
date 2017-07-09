@@ -15,14 +15,14 @@ import static com.example.magda.movieapp.data.FavouriteMoviesContract.FavouriteM
 
 public class FavouritesContentProvider extends ContentProvider {
 
-    private FavouriteMoviesDbHelper mFavouriteMaviesHelper;
+    private FavouriteMoviesDbHelper mFavouriteMoviesHelper;
 
-    public static final int FAVOURITES = 100;
-    public static final int FAVOURITES_WITH_ID = 101;
+    private static final int FAVOURITES = 100;
+    private static final int FAVOURITES_WITH_ID = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(FavouriteMoviesContract.AUTHORITY, FavouriteMoviesContract.PATH_FAVOURITES, FAVOURITES);
         uriMatcher.addURI(FavouriteMoviesContract.AUTHORITY, FavouriteMoviesContract.PATH_FAVOURITES + "/#", FAVOURITES_WITH_ID);
@@ -32,14 +32,14 @@ public class FavouritesContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        mFavouriteMaviesHelper = new FavouriteMoviesDbHelper(context);
+        mFavouriteMoviesHelper = new FavouriteMoviesDbHelper(context);
         return true;
     }
 
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        final SQLiteDatabase db = mFavouriteMaviesHelper.getReadableDatabase();
+        final SQLiteDatabase db = mFavouriteMoviesHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
 
         Cursor cursor;
@@ -89,7 +89,7 @@ public class FavouritesContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        final SQLiteDatabase db = mFavouriteMaviesHelper.getWritableDatabase();
+        final SQLiteDatabase db = mFavouriteMoviesHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
 
         Uri returnUri;
@@ -114,7 +114,7 @@ public class FavouritesContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        final SQLiteDatabase db = mFavouriteMaviesHelper.getWritableDatabase();
+        final SQLiteDatabase db = mFavouriteMoviesHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
         int favouritesDeleted;
 
