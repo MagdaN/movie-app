@@ -25,6 +25,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.example.magda.movieapp"
+            android:name="com.example.magda.movieapp.data.FavouritesContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

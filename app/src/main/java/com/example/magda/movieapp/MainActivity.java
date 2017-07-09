@@ -166,15 +166,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private Cursor getFavouritesFromDb() {
 
-        return mDb.query(
-                FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME,
-                null,
-                null,
+        try {
+            return getContentResolver().query(FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI,
                 null,
                 null,
                 null,
                 FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE
-        );
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -208,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             if (params[0].equals("favourites")) {
 
                 MovieDBEntry[] retrievedMovieData;
+
                 Cursor cursor = getFavouritesFromDb();
                 int size = cursor.getCount();
                 retrievedMovieData = new MovieDBEntry[size];

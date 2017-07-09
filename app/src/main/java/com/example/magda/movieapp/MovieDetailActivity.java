@@ -43,7 +43,6 @@ import static java.lang.Long.parseLong;
 public class MovieDetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
     private MovieDBEntry mMovie;
-    private SQLiteDatabase mDb;
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
     private LinearLayout mReviews;
@@ -74,14 +73,13 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         Intent intentThatStartedThisActivity = getIntent();
 
-        FavouriteMoviesDbHelper dbHelper = new FavouriteMoviesDbHelper(this);
-        mDb = dbHelper.getWritableDatabase();
+
 
         mReviewsRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_reviews);
         LinearLayoutManager reviewsLayoutManager =
                 new LinearLayoutManager(this);
         mReviewsRecyclerView.setLayoutManager(reviewsLayoutManager);
-        mReviewsRecyclerView.setHasFixedSize(true);
+        mReviewsRecyclerView.setHasFixedSize(false);
         mReviewsRecyclerView.setNestedScrollingEnabled(false);
         mReviewAdapter = new ReviewAdapter(this);
         mReviewsRecyclerView.setAdapter(mReviewAdapter);
@@ -168,17 +166,18 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     public boolean hasFavourite(MovieDBEntry movieDBEntry) {
 
         String id = movieDBEntry.getmMovieDbId();
-        String selectQuery = "SELECT  * FROM " + FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME + " WHERE "
-                + FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID + " =?";
-
-        Cursor cursor = mDb.rawQuery(selectQuery, new String[]{id});
-
+        Uri uri = FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(id).build();
+        Cursor cursor = getContentResolver().query(uri,
+            null,
+            null,
+            null,
+            FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE
+        );
         boolean hasObject = false;
-
-        if (cursor.moveToFirst()) {
+        if (cursor != null & cursor.moveToFirst()) {
             hasObject = true;
         }
-
         cursor.close();
         return hasObject;
     }
@@ -187,8 +186,10 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         String id = movieDBEntry.getmMovieDbId();
 
-        int result = mDb.delete(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME,
-                FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID + "=" + id, null);
+        Uri uri = FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(id).build();
+
+        int result = getContentResolver().delete(uri,null,null);
 
         if (result > 0) {
 
@@ -206,7 +207,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
     }
 
-    public long addMovieToFavouritesIfNotExists(MovieDBEntry movieDBEntry) {
+    public void addMovieToFavouritesIfNotExists(MovieDBEntry movieDBEntry) {
 
         if (!mIsFavourite) {
             ContentValues cv = new ContentValues();
@@ -216,9 +217,10 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
             cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_VOTE_AVERAGE, movieDBEntry.getmVoteAverage());
             cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_OVERVIEW, movieDBEntry.getmOverview());
             cv.put(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_MOVIE_ID, movieDBEntry.getmMovieDbId());
-            long result = mDb.insert(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME, null, cv);
 
-            if (result != -1) {
+            Uri uri = getContentResolver().insert(FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI, cv);
+
+            if (uri != null) {
                 Context context = getApplicationContext();
                 CharSequence text = getString(R.string.toast_added_favourite);
                 int duration = Toast.LENGTH_SHORT;
@@ -228,10 +230,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 mIsFavourite = true;
                 invalidateOptionsMenu();
             }
-
-            return result;
-        } else {
-            return -1;
         }
     }
 
