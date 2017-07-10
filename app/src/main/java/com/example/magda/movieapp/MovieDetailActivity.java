@@ -69,7 +69,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         Intent intentThatStartedThisActivity = getIntent();
 
 
-
         mReviewsRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_reviews);
         LinearLayoutManager reviewsLayoutManager =
                 new LinearLayoutManager(this);
@@ -81,7 +80,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         mTrailersRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_trailers);
         LinearLayoutManager trailersLayoutManager =
-                new LinearLayoutManager(this);
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mTrailersRecyclerView.setLayoutManager(trailersLayoutManager);
         mTrailersRecyclerView.setHasFixedSize(true);
         mTrailersRecyclerView.setNestedScrollingEnabled(false);

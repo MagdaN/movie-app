@@ -3,9 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginTop="15sp"
-    android:layout_marginBottom="15sp"
+    android:layout_marginTop="@dimen/padding_small_10sp"
+    android:layout_marginBottom="@dimen/padding_small_10sp"
+    android:paddingBottom="@dimen/padding_large_30sp"
+    android:paddingTop="@dimen/padding_large_30sp"
     android:layout_height="wrap_content"
+    android:background="@drawable/trailer_background"
     android:orientation="horizontal">
 
     <ImageView

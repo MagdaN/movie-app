@@ -11,17 +11,17 @@
     <style name="movie_detail_title" parent="AppTheme">
         <item name="android:background">@color/movieGreen</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">30sp</item>
-        <item name="android:paddingRight">15sp</item>
-        <item name="android:paddingLeft">15sp</item>
-        <item name="android:paddingTop">30sp</item>
-        <item name="android:paddingBottom">30sp</item>
+        <item name="android:textSize">@dimen/large_header_font_size</item>
+        <item name="android:paddingRight">@dimen/site_paddings_15ps</item>
+        <item name="android:paddingLeft">@dimen/site_paddings_15ps</item>
+        <item name="android:paddingTop">@dimen/padding_large_30sp</item>
+        <item name="android:paddingBottom">@dimen/padding_large_30sp</item>
     </style>
 
     <style name="movie_detail_content">
-        <item name="android:paddingRight">15sp</item>
-        <item name="android:paddingLeft">15sp</item>
-        <item name="android:paddingTop">10sp</item>
+        <item name="android:paddingRight">@dimen/site_paddings_15ps</item>
+        <item name="android:paddingLeft">@dimen/site_paddings_15ps</item>
+        <item name="android:paddingTop">@dimen/padding_small_10sp</item>
     </style>
 
 </resources>

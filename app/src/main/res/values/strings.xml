@@ -16,4 +16,7 @@
     <string name="remove_from_favourite_movies">Remove from Favourites</string>
     <string name="play_button">Play Icon</string>
     <string name="author_wrote">%1$s wrote:</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis lectus metus, at posuere neque. Sed pharetra nibh eget orci convallis at posuere leo convallis. Sed blandit augue vitae augue scelerisque bibendum. Vivamus sit amet libero turpis, non venenatis urna. In blandit, odio convallis suscipit venenatis, ante ipsum cursus augue.
+
+</string>
 </resources>

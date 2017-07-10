@@ -5,12 +5,12 @@
         android:id="@+id/add_to_favourite_movies"
         android:orderInCategory="1"
         android:title="@string/add_to_favourite_movies"
-        android:icon="@drawable/ic_turned_in_not_white_24dp"
+        android:icon="@drawable/ic_favorite_border_black_24dp"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/remove_from_favourite_movies"
         android:orderInCategory="1"
         android:title="@string/remove_from_favourite_movies"
-        android:icon="@drawable/ic_turned_in_white_24dp"
+        android:icon="@drawable/ic_favorite_black_24dp"
         app:showAsAction="ifRoom" />
 </menu>

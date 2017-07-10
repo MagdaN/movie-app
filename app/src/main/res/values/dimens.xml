@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="large_header_font_size">30sp</dimen>
+    <dimen name="medium_header_font_size">20sp</dimen>
+    <dimen name="site_paddings_15ps">15sp</dimen>
+    <dimen name="padding_small_10sp">10sp</dimen>
+    <dimen name="padding_large_30sp">30sp</dimen>
+    <dimen name="loading_inidicator_size">42dp</dimen>
+    <dimen name="trailer_margins">30sp</dimen>
+</resources>

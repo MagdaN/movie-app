@@ -14,7 +14,7 @@
         android:textStyle="italic"
         android:id="@+id/tv_review_content"
         android:layout_width="match_parent"
-        android:paddingBottom="15sp"
+        android:paddingBottom="@dimen/padding_small_10sp"
         android:layout_height="wrap_content" />
 
 </LinearLayout>
