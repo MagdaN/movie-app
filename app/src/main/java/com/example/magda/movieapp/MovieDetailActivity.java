@@ -101,7 +101,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
                 Picasso.with(getApplicationContext()).load(url).into(mMoviePoster);
 
-                mMovieReleaseDate.setText((mMovie.getmReleaseDate()).split("-")[0]);
+                mMovieReleaseDate.setText((mMovie.getmReleaseDate()));
                 String ratings = mMovie.getmVoteAverage();
                 Resources res = getResources();
                 mMovieRatings.setText(String.format(res.getString(R.string.votes), ratings));
