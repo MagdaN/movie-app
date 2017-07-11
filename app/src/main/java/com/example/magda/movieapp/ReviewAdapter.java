@@ -59,6 +59,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         return new ReviewAdapter.ReviewAdapterViewHolder(view);
     }
 
+    public MovieDBReview[] getValues() {
+        return mReviewData;
+    }
+
     public void setmReviewData(MovieDBReview[] reviewData) {
         mReviewData = reviewData;
         notifyDataSetChanged();

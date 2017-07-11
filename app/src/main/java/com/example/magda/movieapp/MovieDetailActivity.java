@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
@@ -89,8 +90,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("movie_detail")) {
-                mMovie = intentThatStartedThisActivity.getParcelableExtra("movie_detail");
 
+                mMovie = intentThatStartedThisActivity.getParcelableExtra("movie_detail");
                 mIsFavourite = hasFavourite(mMovie);
 
                 mMovieTitle.setText(mMovie.getmTitle());
@@ -111,6 +112,34 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
                 new FetchMovieTrailersTask().execute(mMovie.getmMovieDbId());
             }
         }
+
+        if (savedInstanceState != null) {
+            mMovie = savedInstanceState.getParcelable("CURRENT_MOVIE");
+
+            Parcelable[] current_trailers = savedInstanceState.getParcelableArray("CURRENT_TRAILERS");
+            MovieDBTrailer[] trailers = new MovieDBTrailer[current_trailers.length];
+            for (int i = 0; i < current_trailers.length; i++) {
+                trailers[i] = (MovieDBTrailer) current_trailers[i];
+            }
+
+            Parcelable[] current_reviews = savedInstanceState.getParcelableArray("CURRENT_REVIEWS");
+            MovieDBReview[] reviews = new MovieDBReview[current_reviews.length];
+            for (int i = 0; i < current_reviews.length; i++) {
+                reviews[i] = (MovieDBReview) current_reviews[i];
+            }
+
+            mTrailerAdapter.setmTrailerData(trailers);
+            mReviewAdapter.setmReviewData(reviews);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("CURRENT_MOVIE", mMovie);
+        outState.putParcelableArray("CURRENT_TRAILERS", mTrailerAdapter.getValues());
+        outState.putParcelableArray("CURRENT_REVIEWS", mReviewAdapter.getValues());
+
     }
 
     @Override
@@ -231,7 +260,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         protected void onPostExecute(MovieDBTrailer[] movieDBTrailers) {
             if (movieDBTrailers.length != 0) {
                 mTrailers.setVisibility(View.VISIBLE);
-                mTrailerAdapter.setmReviewData(movieDBTrailers);
+                mTrailerAdapter.setmTrailerData(movieDBTrailers);
             }
         }
 

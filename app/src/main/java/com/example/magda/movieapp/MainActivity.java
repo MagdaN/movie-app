@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -83,12 +84,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         if (savedInstanceState != null) {
             mSorting = savedInstanceState.getString("CURRENT_SORTING");
+            Parcelable[] current_movies = savedInstanceState.getParcelableArray("CURRENT_MOVIES");
+            MovieDBEntry [] movies = new MovieDBEntry[current_movies.length];
+            for(int i = 0; i < current_movies.length; i++) {
+                movies[i] = (MovieDBEntry) current_movies[i];
+            }
+
+            mMovieAdapter.setmMovieData(movies);
+
         } else {
             mSorting = "popularity";
+            loadMovieData();
         }
 
-        loadMovieData();
     }
+
 
     @Override
     public void onResume() {
@@ -140,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("CURRENT_SORTING", mSorting);
+        outState.putParcelableArray("CURRENT_MOVIES", mMovieAdapter.getValues());
+
     }
 
     private void loadMovieData() {

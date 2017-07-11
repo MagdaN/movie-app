@@ -96,4 +96,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         mMovieData = movieData;
         notifyDataSetChanged();
     }
+
+    public MovieDBEntry[] getValues() {
+        return mMovieData;
+    }
 }
